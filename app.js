@@ -22,4 +22,8 @@ app.use("/user/", userRoute);
 app.use("/notes/", notesRoute);
 app.use("/search/", searchRoute);
 
+app.get("/", (req, res) => {
+  res.send("i am working");
+});
+
 module.exports = app;
