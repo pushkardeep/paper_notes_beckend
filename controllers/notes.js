@@ -21,6 +21,9 @@ const getNotes = async (req, res) => {
       notes: notes.notes,
     });
   } catch (error) {
+    res.send({
+      success: false,
+    });
     console.log("you have error n getting notes");
   }
 };
@@ -47,6 +50,9 @@ const createNote = async (req, res) => {
       newNote,
     });
   } catch (error) {
+    res.send({
+      success: false,
+    });
     console.log("you have error in creating notes");
   }
 };
@@ -67,6 +73,9 @@ const deleteNote = async (req, res) => {
       deletedNote,
     });
   } catch (error) {
+    res.send({
+      success: false,
+    });
     console.log("you have error in deleting note", error);
   }
 };
@@ -93,6 +102,9 @@ const editNote = async (req, res) => {
       updatedNote,
     });
   } catch (error) {
+    res.send({
+      success: false,
+    });
     console.log("you have error in updating notes");
   }
 };

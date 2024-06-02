@@ -15,6 +15,9 @@ const searchedNote = async (req, res) => {
       notes,
     });
   } catch (error) {
+    res.send({
+      success: false,
+    });
     console.log("you have error in searching note");
   }
 };
