@@ -81,7 +81,7 @@
 
 ## 🤝 Contributing
 
-We welcome contributions! Fork the repository and submit a pull request for any new features or improvements.
+I am welcome contributions! Fork the repository and submit a pull request for any new features or improvements.
 
 ## 📧 Contact
 
