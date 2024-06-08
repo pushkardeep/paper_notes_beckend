@@ -5,61 +5,67 @@ require("dotenv").config();
 
 const sign_up = async (req, res) => {
   try {
-    const user = await userModel.findOne({ email: req.body.email });
-    if (user) {
-      res.send({
-        success: false,
-      });
+    const { email, password, name } = req.body;
 
-      return;
+    // Check if the user already exists
+    const existingUser = await userModel.findOne({ email });
+    if (existingUser) {
+      return res.send({ success: false, message: "User already exists" });
     }
 
-    const token = jwt.sign({ email: req.body.email }, process.env.SECERET_KEY);
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    // Create JWT token
+    const token = jwt.sign({ email }, process.env.SECERET_KEY);
 
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new user
     const newUser = await userModel.create({
-      username: req.body.name,
-      email: req.body.email,
+      username: name,
+      email,
       password: hashedPassword,
     });
 
+    // Send response
     res.send({
       success: true,
-      token: token,
+      token,
       user: newUser,
     });
   } catch (error) {
-    console.log("sign_up error", error);
+    console.error("sign_up error", error);
+    res.send({ success: false, message: "Error signing up" });
   }
 };
 
 const log_in = async (req, res) => {
   try {
-    const user = await userModel.findOne({ email: req.body.email });
-    if (!user) {
-      res.send({
-        success: false,
-      });
+    const { email, password } = req.body;
 
-      return;
+    // Find user
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.send({ success: false, message: "User not found" });
     }
 
-    bcrypt.compare(req.body.password, user.password, (err, result) => {
-      if (result) {
-        const token = jwt.sign({ email: user.email }, process.env.SECERET_KEY);
-        res.send({
-          success: true,
-          token: token,
-        });
-      } else {
-        res.send({
-          success: false,
-        });
-      }
+    // Compare password
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.send({ success: false, message: "Invalid credentials" });
+    }
+
+    // Create JWT token
+    const token = jwt.sign({ email: user.email }, process.env.SECERET_KEY);
+
+    // Send response
+    res.send({
+      success: true,
+      token,
     });
   } catch (error) {
-    console.log("you have log_in error");
+    console.error("log_in error", error);
+    res.send({ success: false, message: "Error logging in" });
   }
 };
 
@@ -70,9 +76,8 @@ const profile = (req, res) => {
       user: req.user,
     });
   } catch (error) {
-    res.send({
-      success: false,
-    });
+    console.error("profile error", error);
+    res.send({ success: false, message: "Error retrieving profile" });
   }
 };
 

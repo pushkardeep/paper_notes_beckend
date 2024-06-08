@@ -3,110 +3,76 @@ const notesModel = require("../models/notes-model");
 
 const getNotes = async (req, res) => {
   try {
-    const user = await userModel.findOne({ email: req.user.email });
-    if (!user) {
-      res.send({
-        success: false,
-      });
-
-      return;
-    }
-
-    const notes = await userModel
+    const user = await userModel
       .findOne({ email: req.user.email })
       .populate("notes");
 
-    res.send({
-      success: true,
-      notes: notes.notes,
-    });
+    if (!user) {
+      return res.send({ success: false });
+    }
+
+    res.send({ success: true, notes: user.notes });
   } catch (error) {
-    res.send({
-      success: false,
-    });
-    console.log("you have error n getting notes");
+    console.error("Error in getting notes", error);
+    res.send({ success: false });
   }
 };
 
 const createNote = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.user.email });
+
     if (!user) {
-      res.send({
-        success: false,
-      });
-      return;
+      return res.send({ success: false });
     }
 
-    const newNote = await notesModel.create(req.body);
-    newNote.user = user._id;
-    newNote.save();
-
+    const newNote = await notesModel.create({ ...req.body, user: user._id });
     user.notes.push(newNote._id);
-    user.save();
+    await user.save();
 
-    res.send({
-      success: true,
-      newNote,
-    });
+    res.send({ success: true, newNote });
   } catch (error) {
-    res.send({
-      success: false,
-    });
-    console.log("you have error in creating notes");
+    console.error("Error in creating note", error);
+    res.send({ success: false });
   }
 };
 
 const deleteNote = async (req, res) => {
   try {
-    const deletedNote = await notesModel.findOneAndDelete({ _id: req.body.id });
-    await userModel.findOneAndUpdate(
-      { _id: req.user._id },
-      {
-        $pull: { notes: req.body.id },
-      },
-      { new: true }
-    );
+    const { id } = req.body;
+    const deletedNote = await notesModel.findByIdAndDelete(id);
 
-    res.send({
-      success: true,
-      deletedNote,
-    });
+    if (!deletedNote) {
+      return res.send({ success: false });
+    }
+
+    await userModel.findByIdAndUpdate(req.user._id, { $pull: { notes: id } });
+
+    res.send({ success: true, deletedNote });
   } catch (error) {
-    res.send({
-      success: false,
-    });
-    console.log("you have error in deleting note", error);
+    console.error("Error in deleting note", error);
+    res.send({ success: false });
   }
 };
 
 const editNote = async (req, res) => {
   try {
-    const note = await notesModel.findOne({ _id: req.body.id });
-
-    if (!note) {
-      res.send({
-        success: false,
-      });
-      return;
-    }
-
-    const updatedNote = await notesModel.findOneAndUpdate(
-      { _id: req.body.id },
-      { title: req.body.title, text: req.body.text },
+    const { id, title, text } = req.body;
+    const updatedNote = await notesModel.findByIdAndUpdate(
+      id,
+      { title, text },
       { new: true }
     );
 
-    res.send({
-      success: true,
-      updatedNote,
-    });
+    if (!updatedNote) {
+      return res.send({ success: false });
+    }
+
+    res.send({ success: true, updatedNote });
   } catch (error) {
-    res.send({
-      success: false,
-    });
-    console.log("you have error in updating notes");
+    console.error("Error in updating note", error);
+    res.send({ success: false });
   }
 };
 
-module.exports = { createNote, getNotes, deleteNote, editNote };
+module.exports = { getNotes, createNote, deleteNote, editNote };

@@ -4,10 +4,10 @@ const notesModel = require("../models/notes-model");
 const searchedNote = async (req, res) => {
   try {
     const user = await userModel.findOne({ email: req.user.email });
-    const searchedNote = await notesModel.find({ title: req.body.search });
 
-    const notes = searchedNote.filter((elem) => {
-      return JSON.stringify(elem.user) === JSON.stringify(user._id);
+    const notes = await notesModel.find({
+      title: { $regex: req.body.search, $options: "i" },
+      user: user._id,
     });
 
     res.send({
@@ -18,7 +18,7 @@ const searchedNote = async (req, res) => {
     res.send({
       success: false,
     });
-    console.log("you have error in searching note");
+    console.log("Error in searching note:", error);
   }
 };
 
