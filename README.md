@@ -31,7 +31,7 @@
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/paper-notes-backend.git
+    git clone https://github.com/pushkardeep/paper_notes_beckend.git
     cd paper-notes-backend
     ```
 
@@ -46,15 +46,16 @@
     Create a `.env` file in the root directory with the following content:
 
     ```env
-    MONGO_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret
-    PORT=5000
+    MongoDB_URI=your_mongodb_URI
+    ORIGIN_URI=frontend_origin_URI
+    PORT=3000
+    SECERET_KEY=your_choice
     ```
 
 4. **Start the server:**
 
     ```bash
-    npm run dev
+    npx nodemon index.js
     ```
 
     The server should now be running at `http://localhost:5000`.
