@@ -64,16 +64,20 @@
 
 ### Authentication
 
-- **POST** `/api/auth/register`: Register a new user.
-- **POST** `/api/auth/login`: Authenticate user and get token.
+- **POST** `/user/sign_up`: Register a new user.
+- **POST** `/user/log_In`: Authenticate user and get token.
+
+ ### User
+
+- **POST** `/user/profile`: Get user profile.
 
 ### Notes
 
-- **GET** `/api/notes`: Get all notes.
-- **POST** `/api/notes`: Create a new note.
-- **GET** `/api/notes/:id`: Get a specific note.
-- **PUT** `/api/notes/:id`: Update a specific note.
-- **DELETE** `/api/notes/:id`: Delete a specific note.
+- **POST** `/notes/getNotes`: Get all notes.
+- **POST** `/notes/createNote`: Create a new note.
+- **POST** `/search/notes`: Get a specific note.
+- **POST** `/notes/editNote`: Update a specific note.
+- **POST** `/notes/deleteNote`: Delete a specific note.
 
 ## 🤝 Contributing
 
