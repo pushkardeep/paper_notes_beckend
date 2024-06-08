@@ -81,9 +81,6 @@ We welcome contributions! Fork the repository and submit a pull request for any 
 
 ## 📧 Contact
 
-- **Email:** backend-support@example.com
-- **GitHub:** [@yourusername](https://github.com/yourusername)
+- **Email:** just.pushkardeep@gmail.com
+- **GitHub:** [@pushkardeep](https://github.com/pushkardeep)
 
-## 📜 License
-
-Licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
